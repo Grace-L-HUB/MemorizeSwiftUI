@@ -17,11 +17,14 @@ struct MemoryGame<CardContend> where CardContend: Equatable{
     
     init(numberOfPairsOfCards: Int,createCardContent: (Int) -> CardContend){
         cards = Array<Card>()
+        // 创建成对的卡片
         for pairIndex in 0..<numberOfPairsOfCards{
             let content = createCardContent(pairIndex)
             cards.append(Card(content: content, id: pairIndex*2))
             cards.append(Card(content: content, id: pairIndex*2+1))
         }
+        // 打乱卡片顺序
+        cards.shuffle()
     }
     
     // mutating使该函数能够改变struct的变量

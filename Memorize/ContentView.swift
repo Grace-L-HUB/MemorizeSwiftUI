@@ -14,15 +14,49 @@ struct ContentView: View {
     @ObservedObject var viewModel: EmojiMemoryGame
 
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns:[GridItem(.adaptive(minimum: 65))]){
-                ForEach(viewModel.cards){ card in
-                    MyCardView(card: card)
-                        .aspectRatio(2/3,contentMode: .fit)
-                        .onTapGesture {
-                            // View向ViewModel发送改变Model的通知
-                            viewModel.choose(card)
-                        }
+        VStack {
+            // 游戏标题
+            Text("Memorize!")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+                .padding()
+            
+            // 难度选择器
+            HStack {
+                Text("难度:")
+                    .font(.headline)
+                
+                Picker("选择难度", selection: $viewModel.difficulty) {
+                    ForEach(EmojiMemoryGame.Difficulty.allCases) { difficulty in
+                        Text(difficulty.rawValue.capitalized)
+                            .tag(difficulty)
+                    }
+                }
+                .pickerStyle(SegmentedPickerStyle())
+                .padding()
+            }
+            
+            // 重置游戏按钮
+            Button(action: { viewModel.resetGame() }) {
+                Text("重新开始")
+                    .padding()
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+            }
+            .padding()
+            
+            // 卡片网格
+            ScrollView {
+                LazyVGrid(columns:[GridItem(.adaptive(minimum: 65))]){
+                    ForEach(viewModel.cards){ card in
+                        MyCardView(card: card)
+                            .aspectRatio(2/3,contentMode: .fit)
+                            .onTapGesture {
+                                // View向ViewModel发送改变Model的通知
+                                viewModel.choose(card)
+                            }
+                    }
                 }
             }
         }
